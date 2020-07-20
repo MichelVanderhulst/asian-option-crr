@@ -23,7 +23,6 @@ Faker==4.0.1
 Flask==1.1.2
 Flask-Compress==1.5.0
 future==0.18.2
-get==2019.4.13
 gevent==1.4.0
 gevent-websocket==0.10.1
 greenlet==0.4.15
