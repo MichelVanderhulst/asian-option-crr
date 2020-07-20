@@ -52,7 +52,27 @@ def header():
                                       ],
                              style={"display":"inline-block", "font-family":'sans-serif'}),
                     #
-                    #
+					html.Div(children=[dbc.Button("References", id="popover-references", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
+                                       dbc.Popover(children=[dbc.PopoverHeader("References"),
+                                                             dbc.PopoverBody(["Academical references: ", 
+                                                             				  html.Br(),  
+                                                             				  "- Vrins, F. (2020). Lecture notes of the course Derivatives Pricing. Louvain School of Management",
+                                                             				  html.Br(),
+                                                             				  "- Shreve, S. (2004). Stochastic Calculus for Finance I: The Binomial Asset Pricing Model (Springer Finance)",
+                                                             				  html.Br(),
+                                                             				  "- Yuxing, Y. (2017). Python for Finance (2nd edition).",
+                                                                              html.Hr(), 
+                                                                              "Web app reference:",
+                                                                              html.Br(),
+                                                                              "- Rankin, Z. (2019). A gentle intro to Dash development, accessed online at https://towardsdatascience.com/a-gentle-introduction-to-dash-development-and-deployment-f8b91990d3bd",
+                                                                              ]),],
+                                                   id="popover-ref",
+                                                   is_open=False,
+                                                   target="popover-references"),
+                                       ],
+                              style={"display":"inline-block", "font-family":"sans-serif", 'marginLeft': '55%'}),
+					#
+					#
                     html.Div(children=[dbc.Button("About", id="popover-target", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
                                        dbc.Popover(children=[dbc.PopoverHeader("About"),
                                                              dbc.PopoverBody(["Michel Vanderhulst",                             
@@ -63,7 +83,7 @@ def header():
                                                    is_open=False,
                                                    target="popover-target"),
                                        ],
-                              style={"display":"inline-block", "font-family":"sans-serif", 'marginLeft': '60%'}),
+                              style={"display":"inline-block", "font-family":"sans-serif", "padding":5 }),
                          ],
                 style={
                     'background': bg_color,
@@ -617,6 +637,17 @@ def display_value4(value):
     Output("popover", "is_open"),
     [Input("popover-target", "n_clicks")],
     [State("popover", "is_open")],
+)
+def toggle_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    Output("popover-ref", "is_open"),
+    [Input("popover-references", "n_clicks")],
+    [State("popover-ref", "is_open")],
 )
 def toggle_popover(n, is_open):
     if n:
