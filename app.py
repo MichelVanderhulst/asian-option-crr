@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
-from EU_Option_CRR_GRW_V5 import *
+from Asian_Option_CRR_GRW_V4 import *
 from descriptions import list_input
 import base64
 
@@ -16,12 +16,6 @@ bg_color="#506784",
 font_color="#F3F6FA"
 
 
-top_markdown_text = '''
-### Call/Put Replication Strategy Tool - CRR model
-#### Michel Vanderhulst 
-#### Master's thesis - Louvain School of Management
-'''
-
 email = "michelvanderhulst@student.uclouvain.be"
 
 graph_stock_simul = ''' #### Stock simulation (GRW) '''
@@ -30,7 +24,6 @@ graph_nbr_shares = ''' #### Shares held before/after rebalancing'''
 graph_cash = ''' #### Cash account before/after rebalancing'''
 graph_option_price = ''' #### Option price'''
 graph_option_intrinsic = ''' #### Option intrinsic value'''
-
 
 
 def header():
@@ -54,7 +47,7 @@ def header():
                        #      ), style={"display":"inline-block"}),
                     #
                     #
-                    html.Div(children=[html.H3("European option replication strategy app"),
+                    html.Div(children=[html.H3("Asian option replication strategy app"),
                                        html.H4("Cox-Ross-Rubinstein model")
                                       ],
                              style={"display":"inline-block", "font-family":'sans-serif'}),
@@ -82,7 +75,6 @@ def header():
 
 
 
-
 def body():
     return html.Div(children=[
             html.Div(id='left-column', children=[
@@ -97,7 +89,7 @@ def body():
                                 html.H4('What is this app?', style={"text-align":"center"}),
                                 html.P(
                                     """
-                                    This app computes the replication strategy of vanilla European options on a set of given, comparing the Cox-Ross-Rubinstein model and strategy option price.
+                                    This app computes the replication strategy of Asian options on a set of given, comparing the Cox-Ross-Rubinstein model and strategy option price.
                                     """
                                 ),
                                 html.P(
@@ -153,7 +145,9 @@ def body():
                                 html.P([
                                     """
                                     To prove that the risk-neutral price is arbitrage-free, let us try to perfectly replicate it with a strategy. If the strategy is successfull, then 
-                                    the price is unique and therefore arbitrage-free.
+                                    the price is unique and therefore arbitrage-free. For an Asian option, we will also denote with \(s_0\) the stock price at time 0 and \(Y_n=\sum_{k=0}^{n}s_k\) the sum of the 
+                                    stock prices between times zero and n. From there, the payoff at time 3 will be \((\\frac{1}{4}Y_{3}-K)^+\) with strike K. Then, let \(V_n(s,y)\) be the price of
+                                    the Asian option at node n if \(s_n=s\) and \(Y_n=y\).
                                     """]),
                                 html.Hr(),
                                 html.H4("Risk-neutral pricing", style={"text-align":"center"}),
@@ -161,19 +155,19 @@ def body():
                                     """
                                     With the CRR, the stock tree and the option intrinsic value are easily computed at all nodes. Under the pricing measure, the option
                                     price of a node is simply the discounted value of the two children nodes. The price tree is therefore filled backwards,
-                                    starting from the leaves (i.e. the payoff).
+                                    starting from the leaves (i.e. the payoff). 
                                     """]),
                                 html.H4("Replicating portfolio", style={"text-align":"center"}),
                                 html.P([
                                     """
-                                    Then, if the price computed is truly arbitrage-free, a replication strategy can be based on this price: \(\pi_{0} = v_{0}\).
-                                     At the begining of each period, the number of shares to hold is \(\Delta_{i}^{j} = \\frac{v_{i+1}^{j}-v_{i+1}^{j+1}}{s_{i+1}^{j}-s_{i+1}^{j+1}}\). 
-                                     The initial amount of cash will be \(c_{0} = \pi_{0} - \Delta_{0}s_{0}\). At each node, a portfolio rebalancing is needed. Before the rebalancing, 
-                                     \(\Delta\) is the same from node to node \(\Delta_{i}^{j}=\Delta_{i-1}^{j}\), the cash account grew at the risk-free rate \(c_{i}^{j}=c_{i-1}^{j}e^{r}\), 
-                                     and the portfolio is the sum of both equity and cash positions \(\pi_{i}^{j}=c_{i}^{j}+\Delta_{i}^{j}s_{i}^{j}\). The rebalancing is done by updating the shares 
-                                     to hold \(\Delta_{i}^{j}=\\frac{v_{i+1}^{j}-v_{i+1}^{j+1}}{s_{i+1}^{j}-s_{i+1}^{j+1}}\) and ensuring the of value of the strategy before and after the rebalancing is 
-                                     the same \(c_{i}^{j}=\pi_{i}^{j}-(\Delta_{i-1}^{j}-\Delta_{i}^{j})s_{i}^{j}\). The tree is computed forward, and will at all times replicate with option price.
-                                      At the end of it we obtain the option payoff.
+                                    Then, if the price computed is truly arbitrage-free, a replication strategy can be based on this price: \(\pi_{0} = V_{0}(s,y)\).
+                                     At each period, the number of shares to hold is given by \(\Delta_{n}(s,y) = \\frac{V_{n+1}(us, y + us)-V_{n+1}(ds, y + ds)}{(u-d)s}\). 
+                                     The initial amount of cash will be \(c_{0} = \pi_{0} - \Delta_{0}(s,y)s_{0}\). At each node, a portfolio rebalancing is needed to ensure that the portfolio value is 
+                                     equal to the option price. Before the rebalancing, \(\Delta\) is the same from node to node, the cash account grew at 
+                                     the risk-free rate \(c_{n}=c_{n-1}e^{r}\), and the portfolio is the sum of both equity and cash positions \(\pi_{n} = c_{n}+\Delta_{n}(s,y)s_{n}\). 
+                                     The rebalancing is done by updating the shares to hold \(\Delta_{n}(s,y) = \\frac{V_{n+1}(us, y + us)-V_{n+1}(ds, y + ds)}{(u-d)s}\) and ensuring that the value
+                                      of the strategy before and after the rebalancing is the same \(c_{n}=\pi_{n}-(\Delta_{n-1}-\Delta_{n})s_{n}\). The tree is computed forward, 
+                                      and will at all times replicate with option price. At the end of it we obtain the option payoff.
                                     """]),
                                 ])]),
                         #
@@ -191,8 +185,8 @@ def body():
                                                 ),
                                                 dcc.Dropdown(
                                                     id='CallOrPut',
-                                                    options=[{'label':'European Call option', 'value':"Call"},
-                                                             {'label':'European Put option', 'value':"Put"}],
+                                                    options=[{'label':'Asian Call option', 'value':"Call"},
+                                                             {'label':'Asian Put option', 'value':"Put"}],
                                                     value='Call'),
                                                 #
                                                 html.Br(),
@@ -279,8 +273,6 @@ app.layout = html.Div(
                      )
 
 
-
-
 @app.callback(
 	Output('memory-output', 'data'),
 	[Input('CallOrPut', 'value'),
@@ -292,7 +284,7 @@ app.layout = html.Div(
      Input("vol", "value"),
      Input("tree_periods", "value"),])
 def get_rep_strat_data(CallOrPut, S, K, Rf,T,mu,vol,tree_periods):
-	nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown = RepStrat_EU_Option_CRR_GRW_V5(CallOrPut, S, K, Rf, T, mu, vol, tree_periods)
+	nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown = RepStrat_Asian_Option_CRR_GRW_V4(CallOrPut, S, K, Rf, T, mu, vol, tree_periods)
 																
 	return nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown
 
@@ -324,7 +316,7 @@ def graph_stock_simul(data):
                'visible': False,},  # numbers below}
         legend=dict(
             x=0,
-            y=1,
+            y=0.8,
             traceorder='normal',
             bgcolor='rgba(0,0,0,0)'),
     ),
