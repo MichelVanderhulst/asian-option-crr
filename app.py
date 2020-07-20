@@ -219,7 +219,7 @@ def body():
                                                 #
                                                 html.Br(),
                                                 html.Div(children=[html.Label('Tree periods', title=list_input["Tree periods"], style={'font-weight': 'bold', "text-align":"center", "width":"25%",'display': 'inline-block'} ),
-                                                                   dcc.Input(id="tree_periods", value=4, type='number', style={"width":"16%", 'display': 'inline-block'}),
+                                                                   dcc.Input(id="tree_periods", value=3, type='number', style={"width":"16%", 'display': 'inline-block'}),
                                                                   ],),
                                                 ])),
         ],),], style={'float': 'left', 'width': '25%', 'margin':"30px"}),
