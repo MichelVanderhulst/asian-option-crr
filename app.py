@@ -9,81 +9,30 @@ from descriptions import list_input
 import base64
 
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], 
+	                      external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"],
+	                      meta_tags=[{"content": "width=device-width"}]
+	                      )
 server = app.server
 
 bg_color="#506784",
 font_color="#F3F6FA"
 
 
-email = "michelvanderhulst@student.uclouvain.be"
+email = "michel.vanderhulst@student.uclouvain.be"
 
 graph_stock_simul = ''' #### Stock simulation (GRW) '''
 graph_port_details_text = ''' #### Portfolio before/after rebalancing'''
 graph_nbr_shares = ''' #### Shares held before/after rebalancing'''
 graph_cash = ''' #### Cash account before/after rebalancing'''
 graph_option_price = ''' #### Option price'''
-graph_option_intrinsic = ''' #### Option intrinsic value'''
+graph_option_intrinsic = ''' #### Cumulative sum of stock'''
 
 
 def header():
     return html.Div(
                 id='app-page-header',
-                children=[#html.Div(html.A(
-                      #            id='lsm-logo', 
-                      #            children=[html.Img(src='data:image/png;base64,{}'.format(base64.b64encode(open("output-onlinepngtools (1).png", 'rb').read()).decode()))],
-                      #            href="https://uclouvain.be/en/faculties/lsm",
-                      #            target="_blank", #open link in new tab
-                      #            style={'margin':'20px'}
-                      #              ), style={"display":"inline-block"}),
-                    #
-                    #
-                    # html.Div(
-                       #  html.A(
-                       #    id="nova-logo", 
-                       #    children=[html.Img(src="data:image/png;base64,{}".format(base64.b64encode(open("output-onlinepngtools (2).png",'rb').read()).decode()))],
-                       #    href="https://www2.novasbe.unl.pt/en/",
-                       #    style={"margin":"-45px"}
-                       #      ), style={"display":"inline-block"}),
-                    #
-                    #
-     #                html.Div(children=[html.H3("Asian option replication strategy app"),
-     #                                   html.H4("Cox-Ross-Rubinstein model")
-     #                                  ],
-     #                         style={"display":"inline-block", "font-family":'sans-serif'}),
-     #                #
-					# html.Div(children=[dbc.Button("References", id="popover-references", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
-     #                                   dbc.Popover(children=[dbc.PopoverHeader("References"),
-     #                                                         dbc.PopoverBody(["Academical references: ", 
-     #                                                         				  html.Br(),  
-     #                                                         				  "- Vrins, F. (2020). Lecture notes of the course Derivatives Pricing. Louvain School of Management",
-     #                                                         				  html.Br(),
-     #                                                         				  "- Shreve, S. (2004). Stochastic Calculus for Finance I: The Binomial Asset Pricing Model (Springer Finance)",
-     #                                                         				  html.Br(),
-     #                                                         				  "- Yuxing, Y. (2017). Python for Finance (2nd edition).",
-     #                                                                          html.Hr(), 
-     #                                                                          "Web app reference:",
-     #                                                                          html.Br(),
-     #                                                                          "- Rankin, Z. (2019). A gentle intro to Dash development, accessed online at https://towardsdatascience.com/a-gentle-introduction-to-dash-development-and-deployment-f8b91990d3bd",
-     #                                                                          ]),],
-     #                                               id="popover-ref",
-     #                                               is_open=False,
-     #                                               target="popover-references"),
-     #                                   ],
-     #                          style={"display":"inline-block", "font-family":"sans-serif", 'marginLeft': '55%'}),
-					# #
-					# #
-     #                html.Div(children=[dbc.Button("About", id="popover-target", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
-     #                                   dbc.Popover(children=[dbc.PopoverHeader("About"),
-     #                                                         dbc.PopoverBody(["Michel Vanderhulst",                             
-     #                                                                          f"\n {email}", 
-     #                                                                          html.Hr(), 
-     #                                                                          "This app was built for my Master's Thesis, under the supervision of Prof. Frédéric Vrins (frederic.vrins@uclouvain.be)."]),],
-     #                                               id="popover",
-     #                                               is_open=False,
-     #                                               target="popover-target"),
-     #                                   ],
-     #                          style={"display":"inline-block", "font-family":"sans-serif", "padding":5 }),
+                children=[
                     html.Div(children=[html.A(id='lsm-logo', 
                                               children=[html.Img(style={'height':'7%', 'width':'7%'}, src='data:image/png;base64,{}'.format(base64.b64encode(open("1200px-Louvain_School_of_Management_logo.svg.png", 'rb').read()).decode()))],
                                               href="https://uclouvain.be/en/faculties/lsm",
@@ -130,11 +79,11 @@ def body():
     return html.Div(children=[
             html.Div(id='left-column', children=[
                 dcc.Tabs(
-                    id='tabs', value='The app',
+                    id='tabs', value='About this App',
                     children=[
                         dcc.Tab(
-                            label='The app',
-                            value='The app',
+                            label='About this App',
+                            value='About this App',
                             children=html.Div(children=[
                                 html.Br(),
                                 html.H4('What is this app?', style={"text-align":"center"}),
@@ -188,7 +137,7 @@ def body():
                         #
                         #
                         dcc.Tab(
-                            label="Approach",
+                            label="Appr-oach",
                             value="Methodology",
                             children=[html.Div(children=[
                                 html.Br(),
@@ -675,15 +624,15 @@ def toggle_popover(n, is_open):
     return is_open
 
 
-@app.callback(
-    Output("popover-ref", "is_open"),
-    [Input("popover-references", "n_clicks")],
-    [State("popover-ref", "is_open")],
-)
-def toggle_popover(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+# @app.callback(
+#     Output("popover-ref", "is_open"),
+#     [Input("popover-references", "n_clicks")],
+#     [State("popover-ref", "is_open")],
+# )
+# def toggle_popover(n, is_open):
+#     if n:
+#         return not is_open
+#     return is_open
 
 
 if __name__ == '__main__':
