@@ -187,12 +187,16 @@ def body():
                                                 #
                                                 html.Br(),
                                                 #
-                                                html.Div(children=[html.Label('Spot price', title=list_input["Spot price"], style={'font-weight': 'bold', "text-align":"center", "width":"25%",'display': 'inline-block'} ),
+                                                html.Div(children=[html.Label('Spot price', title=list_input["Spot price"], style={'font-weight': 'bold', "text-align":"left", "width":"25%",'display': 'inline-block'} ),
                                                                    dcc.Input(id="S", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
-                                                                   html.Label("Strike", title=list_input["Strike"], style={'font-weight': 'bold',"text-align":"center", "width":"25%",'display': 'inline-block'} ),
-                                                                   dcc.Input(id="K", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
-                                                                  ],),                     
-                                                #
+                                                                   html.P("",id="message_S", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
+                                                                  ]
+                                                        ),
+                                               html.Div(children=[html.Label("Strike", title=list_input["Strike"], style={'font-weight': 'bold',"text-align":"left", "width":"25%",'display': 'inline-block'} ),
+                                                                 dcc.Input(id="K", value=100, type='number', style={"width":"16%", 'display': 'inline-block'}),
+                                                                 html.P("",id="message_K", style={"font-size":12, "color":"red", "padding":5, 'width': '55%', "text-align":"left", 'display': 'inline-block'})
+                                                                ],
+                                                      ), 
                                                 html.Div(children=[html.Label("Drift", title=list_input["Drift"], style={'font-weight': 'bold', 'display': 'inline-block'}),
                                                                    html.Label(id="drift", style={'display': 'inline-block'}),
                                                                   ]),
@@ -214,9 +218,11 @@ def body():
                                                            marks={0.25:"3 months", 5:"5 years"}, step=0.25, value=3),
                                                 #
                                                 html.Br(),
-                                                html.Div(children=[html.Label('Tree periods', title=list_input["Tree periods"], style={'font-weight': 'bold', "text-align":"center", "width":"25%",'display': 'inline-block'} ),
+                                                html.Div(children=[html.Label('Tree periods: ', title=list_input["Tree periods"], style={'font-weight': 'bold', "text-align":"left", "width":"30%",'display': 'inline-block'} ),
                                                                    dcc.Input(id="tree_periods", value=3, type='number', style={"width":"16%", 'display': 'inline-block'}),
-                                                                  ],),
+                                                                   html.P("",id="message_tree", style={"font-size":12, "color":"red", "padding":5, 'width': '40%', "text-align":"left", 'display': 'inline-block'})
+                                                                  ],
+                                                        ),
                                                 ])),
         ],),], style={'float': 'left', 'width': '25%', 'margin':"30px"}),
     ])
@@ -583,7 +589,32 @@ def graph_option_pricee(data):
 	        	),
 	    ],
 }
+# INPUT CHECKS
+@app.callback(Output('message_S', 'children'),
+              [Input('S', 'value')])
+def check_input_S(S):
+    if S<0:
+        return f'Cannot be lower than 0.'
+    else:
+        return ""
 
+@app.callback(Output('message_K', 'children'),
+              [Input('K', 'value')])
+def check_input_K(K):
+    if K<0:
+        return f'Cannot be lower than 0.'
+    else:
+        return ""
+
+@app.callback(Output('message_tree', 'children'),
+              [Input('tree_periods', 'value')])
+def check_input_K(tree__periods):
+    if tree__periods<1:
+        return f'Cannot be lower than 1.'
+    else:
+        return ""
+
+# INPUT VISUALS
 @app.callback(Output('drift', 'children'),
               [Input('mu', 'value')])
 def display_value(value):
