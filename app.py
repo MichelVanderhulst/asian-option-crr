@@ -96,7 +96,7 @@ def body():
                                        ]),
                                 html.Hr(),
                                 html.P(["""
-                                      The considered options are Asian options paying \(\psi(T)\) at maturity \(T\) where \(\psi(X)\) is the payoff function. Defining \(S_{ave}}(T)\) as the underlying asset average price, we have \
+                                      The considered options are Asian options paying \(\psi(T)\) at maturity \(T\) where \(\psi(X)\) is the payoff function. Defining \(S_{ave}(T)\) as the underlying asset average price, we have \
                                       that for a call, the payoff function is \(\psi(T)=max(0,S_{ave}(T)-K)\) and for a put \(\psi(S_T)=max(0,K-S_{ave}(T))\) where K is the strike price."""]),
                                 html.Hr(),
                                 html.P("""Read more about options: https://en.wikipedia.org/wiki/Option_(finance)"""),
