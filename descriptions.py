@@ -22,7 +22,7 @@ list_input = {"-": "-",
               "Tree periods": "Size of the binomial lattice (tree). 10-20 are more than enough to converge to the "
                               "Black-Scholes price. The number of nodes for a given lattice of n periods is given by an"
                               " arithmetic progression with common  difference between terms of 1, i.e. "
-                              r"$S = \frac{s_1+s_n}{2}n$",
+                              "\(S = \\frac{s_1+s_n}{2}n\)",
               "Rebalancing frequency": "Frequency of replication strategy portfolio rebalancing relative to the "
                                        "discretization step. If equal to 1, the portfolio will be rebalanced at every"
                                        " discretization step. If equal to two, the portfolio will be rebalanced every 2"

@@ -1,80 +1,85 @@
+# App Libraries
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
-from Asian_Option_CRR import *
 from descriptions import list_input
 import base64
 
+# Replication strategy library
+from Asian_Option_CRR import *
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], 
-	                      external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"],
-	                      meta_tags=[{"content": "width=device-width"}]
+
+
+# Creating the app object from Dash library
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], #theme for modern-looking buttons, sliders, etc
+	                      external_scripts=['https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML', "./assets/mathjax.js"], #usage of LaTeX in the app
+	                      meta_tags=[{"content": "width=device-width"}] #content gets adapted to user device width
 	                      )
 server = app.server
 
+# Author parameters
 bg_color="#506784",
 font_color="#F3F6FA"
+author = "Michel Vanderhulst"
+emailAuthor = "michelvanderhulst@hotmail.com"
+supervisor = "Prof. Frédéric Vrins"
+emailSupervisor = "frederic.vrins@uclouvain.be"
+logo1path = "./pictures/1200px-Louvain_School_of_Management_logo.svg.png"
+logo1URL  = "https://uclouvain.be/en/faculties/lsm"
+logo2path = "./pictures/1280px-NovaSBE_Logo.svg.png"
+logo2URL  = "https://www2.novasbe.unl.pt/en/"
 
-
-email = "michelvanderhulst@hotmail.com"
-
-graph_stock_simul = ''' #### Stock simulation (GRW) '''
-graph_port_details_text = ''' #### Portfolio after rebalancing'''
-graph_nbr_shares = ''' #### Shares held after rebalancing'''
-graph_cash = ''' #### Cash account after rebalancing'''
-graph_option_price = ''' #### Option price'''
-graph_option_intrinsic = ''' #### Cumulative sum of stock'''
-
-
+# Creating the app header
 def header():
     return html.Div(
                 id='app-page-header',
                 children=[
                     html.Div(children=[html.A(id='lsm-logo', 
-                                              children=[html.Img(style={'height':'7%', 'width':'7%'}, src='data:image/png;base64,{}'.format(base64.b64encode(open("1200px-Louvain_School_of_Management_logo.svg.png", 'rb').read()).decode()))],
-                                              href="https://uclouvain.be/en/faculties/lsm",
+                                              children=[html.Img(style={'height':'6%', 'width':'6%'}, src='data:image/png;base64,{}'.format(base64.b64encode(open(f"{logo1path}", 'rb').read()).decode()))],
+                                              href=f"{logo1URL}",
                                               target="_blank", #open link in new tab
-                                              style={'margin':'5px', }
+                                              style={"margin-left":"10px"}
                                               ),
 
-                                       html.Div(children=[html.H4("Asian option replication strategy app"),
-                                                          html.H5("Cox-Ross-Rubinstein model")
+                                       html.Div(children=[html.H5("Asian option replication strategy app"),
+                                                          html.H6("Cox-Ross-Rubinstein model")
                                                           ],
-                                                 style={"display":"inline-block", "font-family":'sans-serif','transform':'translateY(+25%)', "margin":"1px"}),
+                                                 style={"display":"inline-block", "font-family":'sans-serif','transform':'translateY(+32%)', "margin-left":"10px"}),
 
                                        html.Div(children=[dbc.Button("About", id="popover-target", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
                                                           dbc.Popover(children=[dbc.PopoverHeader("About"),
-                                                                                 dbc.PopoverBody(["Michel Vanderhulst",                             
-                                                                                        f"\n {email}", 
-                                                                                        html.Hr(), 
-                                                                                        "This app was built for my Master's Thesis, under the supervision of Prof. Frédéric Vrins (frederic.vrins@uclouvain.be)."]),],
+                                                                                dbc.PopoverBody([f"{author}",                             
+                                                                                		         f"\n {emailAuthor}", 
+                                                                                        	     html.Hr(), 
+                                                                                        		 f"This app was built for my Master's Thesis, under the supervision of {supervisor} ({emailSupervisor})."]),],
                                                                        id="popover",
                                                                        is_open=False,
                                                                        target="popover-target"),
                                                           ],
-                                                 style={"display":"inline-block","font-family":"sans-serif","marginLeft":"47%"}),
+                                                 style={"display":"inline-block","font-family":"sans-serif","marginLeft":"55%", "margin-right":"10px"}),
 
                                      html.A(id="nova-logo",
-                                             children=[html.Img(style={"height":"11%","width":"11%"}, src="data:image/png;base64,{}".format(base64.b64encode(open("1280px-NovaSBE_Logo.svg.png","rb").read()).decode()))],
-                                             href="https://www2.novasbe.unl.pt/en/",
-                                             target="_blank",                   
+                                            children=[html.Img(style={"height":"9%","width":"9%"}, src="data:image/png;base64,{}".format(base64.b64encode(open(f"{logo2path}","rb").read()).decode()))],
+                                            href=f"{logo2URL}",
+                                            target="_blank",                   
+                                            style={}
                                             )                                       
                                       ]
-                             ,style={"display":"inline-block"}), #'marginLeft': '60%''marginRight': '10%' 'margin':'10px'     
+                             ,style={"display":"inline-block"}),  
                          ],
                 style={
                     'background': bg_color,
                     'color': font_color,
-                    'padding':20,
-                    'margin':'-10px',
+                    "padding-bottom": "10px",
+                    "padding-top":"-10px"
                 }
             )
 
 
-
+# Creating the app body
 def body():
     return html.Div(children=[
             html.Div(id='left-column', children=[
@@ -227,33 +232,32 @@ def body():
         ],),], style={'float': 'left', 'width': '25%', 'margin':"30px"}),
     ])
 
-
-
+# Creating the app graphs
 def graphs():
     return html.Div(id='right-column', 
                     children=[
                         html.Br(),
                         html.Div([
-                            html.Div(children=[dcc.Markdown(children=graph_option_intrinsic),
+                            html.Div(children=[dcc.Markdown(children=''' #### Cumulative sum of stock'''),
                                                dcc.Graph(id='option_intrinsic'),],
                                      style={"float":"right", "width":"45%", "display":"inline-block"}),
-                            html.Div(children=[dcc.Markdown(children=graph_stock_simul),
+                            html.Div(children=[dcc.Markdown(children=''' #### Stock simulation (GRW) '''),
                                                dcc.Graph(id='stock_simul'),],
                                      style={"float":"right", "width":"55%", "display":"inline-block"}),
                                 ]),
                         html.Div([
-                            html.Div(children=[dcc.Markdown(children=graph_option_price),
+                            html.Div(children=[dcc.Markdown(children=''' #### Option price'''),
                                                dcc.Graph(id='option_price'),],
                                      style={"float":"right", "width":"45%", "display":"inline-block"}),
-                            html.Div(children=[dcc.Markdown(children=graph_port_details_text),
+                            html.Div(children=[dcc.Markdown(children=''' #### Portfolio after rebalancing'''),
                                                dcc.Graph(id='port_details'),],
                                      style={"float":"right", "width":"55%", "display":"inline-block"}),
                                 ]),
                         html.Div([
-                            html.Div(children=[dcc.Markdown(children=graph_cash),
+                            html.Div(children=[dcc.Markdown(children=''' #### Cash account after rebalancing'''),
                                                dcc.Graph(id='cash_acc'),],
                                      style={"float":"right", "width":"45%", "display":"inline-block"}),
-                            html.Div(children=[dcc.Markdown(children=graph_nbr_shares),
+                            html.Div(children=[dcc.Markdown(children=''' #### Shares held after rebalancing'''),
                                                dcc.Graph(id='nbr_shares'),],
                                      style={"float":"right", "width":"55%", "display":"inline-block"}),
                                 ]),
@@ -263,7 +267,7 @@ def graphs():
                     style={'float': 'right', 'width': '70%'})
 
 
-
+# Building together the app layout: header, body and graphs
 app.layout = html.Div(
                 id='main_page',
                 children=[
@@ -274,7 +278,7 @@ app.layout = html.Div(
                          ],
                      )
 
-
+# App interactivity 1: calling the replication strategy everytime the user changes an input
 @app.callback(
 	Output('memory-output', 'data'),
 	[Input('CallOrPut', 'value'),
@@ -290,6 +294,7 @@ def get_rep_strat_data(CallOrPut, S, K, Rf,T,mu,vol,tree_periods):
 																
 	return nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown
 
+# App interactivity 2: plot of stock simulation + CRR u, d, probUp & probDown values
 @app.callback(
     Output('stock_simul', 'figure'),
     [Input('memory-output', 'data'),])
@@ -368,6 +373,8 @@ def graph_stock_simul(data):
 }
 
 
+
+# App interactivity 3: plot of portfolio (cash + equity accounts)
 @app.callback(
     Output('port_details', 'figure'),
     [Input('memory-output', 'data'),])
@@ -414,6 +421,7 @@ def graph_portf_details(data):
 }
 
 
+# App interactivity 4: plot of number of shares to hold at all nodes
 @app.callback(
     Output('nbr_shares', 'figure'),
     [Input('memory-output', 'data'),])
@@ -458,6 +466,7 @@ def graph_nbr_of_shares(data):
 	    ],
 }
 
+# App interactivity 5: cash account
 @app.callback(
     Output('cash_acc', 'figure'),
     [Input('memory-output', 'data'),])
@@ -502,6 +511,7 @@ def graph_cash_account(data):
 	    ],
 }
 
+# App interactivity 6: option price through risk-neutral valuation
 @app.callback(
     Output('option_price', 'figure'),
     [Input('memory-output', 'data'),])
@@ -546,10 +556,11 @@ def graph_option_pricee(data):
 	    ],
 }
 
+# App interactivity 7: cumulative sum of stock price for the asian option average
 @app.callback(
     Output('option_intrinsic', 'figure'),
     [Input('memory-output', 'data'),])
-def graph_option_pricee(data):
+def graph_option_cumsum(data):
 		nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown = data
 		return{
        'layout': go.Layout(
@@ -589,7 +600,9 @@ def graph_option_pricee(data):
 	        	),
 	    ],
 }
-# INPUT CHECKS
+
+
+# App input checks
 @app.callback(Output('message_S', 'children'),
               [Input('S', 'value')])
 def check_input_S(S):
@@ -614,7 +627,8 @@ def check_input_K(tree__periods):
     else:
         return ""
 
-# INPUT VISUALS
+
+# App input visuals
 @app.callback(Output('drift', 'children'),
               [Input('mu', 'value')])
 def display_value(value):
@@ -640,6 +654,7 @@ def display_value4(value):
     else:
         return f': {value} years'
 
+# Opens the "About" button top right
 @app.callback(
     Output("popover", "is_open"),
     [Input("popover-target", "n_clicks")],
@@ -651,16 +666,7 @@ def toggle_popover(n, is_open):
     return is_open
 
 
-# @app.callback(
-#     Output("popover-ref", "is_open"),
-#     [Input("popover-references", "n_clicks")],
-#     [State("popover-ref", "is_open")],
-# )
-# def toggle_popover(n, is_open):
-#     if n:
-#         return not is_open
-#     return is_open
 
-
+# Main function, runs the app
 if __name__ == '__main__':
     app.run_server(debug=True)
