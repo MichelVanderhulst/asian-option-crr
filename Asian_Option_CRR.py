@@ -15,7 +15,7 @@ import numpy as np
 #  Yuxing Yan Python for Finance 2nd edition -> the script for the binomial tree. Modified for Asian options.
 #######################################################################################################################
 
-def RepStrat_Asian_Option_CRR_GRW_V4(CallOrPut, S, K, rf, T, mu, vol, tree__periods):
+def RepStrat_Asian_Option_CRR(CallOrPut, S, K, rf, T, mu, vol, tree__periods):
 
 ####################################################################################################################
     #####################  START derivative/model specifics, user input transformation             #####################

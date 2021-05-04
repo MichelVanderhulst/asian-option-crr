@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
-from Asian_Option_CRR_GRW_V4 import *
+from Asian_Option_CRR import *
 from descriptions import list_input
 import base64
 
@@ -286,7 +286,7 @@ app.layout = html.Div(
      Input("vol", "value"),
      Input("tree_periods", "value"),])
 def get_rep_strat_data(CallOrPut, S, K, Rf,T,mu,vol,tree_periods):
-	nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown = RepStrat_Asian_Option_CRR_GRW_V4(CallOrPut, S, K, Rf, T, mu, vol, tree_periods)
+	nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown = RepStrat_Asian_Option_CRR(CallOrPut, S, K, Rf, T, mu, vol, tree_periods)
 																
 	return nbrofsharesLabel, cashLabel, portfolioLabel, optionpriceLabel, intrinsicLabel, stocksLabel, edge_x, edge_y, node_x, node_y, u, d, probUp, probDown
 
