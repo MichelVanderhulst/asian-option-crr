@@ -5,12 +5,13 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
-from descriptions import list_input
 import base64
 
 # Replication strategy library
 from Asian_Option_CRR import *
 
+# Input of rep strat descriptions
+from inputDescriptions import list_input
 
 
 # Creating the app object from Dash library
