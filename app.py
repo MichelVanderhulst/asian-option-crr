@@ -207,21 +207,21 @@ def body():
                                                                    html.Label(id="drift", style={'display': 'inline-block'}),
                                                                   ]),
                                                 #
-                                                dcc.Slider(id='mu', min=-0.30, max=0.30, value=0.10, step=0.01, marks={-0.30: '-30%', 0.30: '30%'}),
+                                                dcc.Slider(id='mu', min=-0.30, max=0.30, value=0.10, step=0.01, marks={-0.30: '-30%', 0:"0%", 0.30: '30%'}),
                                                 #
                                                 html.Div([html.Label('Volatility', title=list_input["Volatility"], style={'font-weight': 'bold', "display":"inline-block"}),
                                                           html.Label(id="sigma", style={"display":"inline-block"}),]),  
                                                 #
-                                                dcc.Slider(id='vol', min=0, max=1, step=0.01, value=0.20, marks={0:"0%", 1:"100%"}),
+                                                dcc.Slider(id='vol', min=0, max=0.5, step=0.01, value=0.15, marks={0:"0%", 0.25:"25%", 0.50:"50%"}),
                                                 #
                                                 html.Div([html.Label('Risk-free rate', title=list_input["Risk-free rate"], style={'font-weight': 'bold', "display":"inline-block"}),
                                                           html.Label(id="riskfree", style={"display":"inline-block"}),]),  
-                                                dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.05, marks={0:"0%", 0.1:"10%"}),
+                                                dcc.Slider(id='Rf', min=0, max=0.1, step=0.01, value=0.05, marks={0:"0%", 0.05:"5%", 0.1:"10%"}),
                                                 #
                                                 html.Div([html.Label('Maturity', title=list_input["Maturity"], style={'font-weight':'bold', "display":"inline-block"}),
                                                           html.Label(id="matu", style={"display":"inline-block"}),]),                                        
                                                 dcc.Slider(id='T', min=0.25, max=5, 
-                                                           marks={0.25:"3 months", 5:"5 years"}, step=0.25, value=3),
+                                                           marks={0.25:"3 months", 3:"3 years", 5:"5 years"}, step=0.25, value=3),
                                                 #
                                                 html.Br(),
                                                 html.Div(children=[html.Label('Tree periods: ', title=list_input["Tree periods"], style={'font-weight': 'bold', "text-align":"left", "width":"30%",'display': 'inline-block'} ),
