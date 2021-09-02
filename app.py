@@ -52,10 +52,13 @@ def header():
 
                                        html.Div(children=[dbc.Button("About", id="popover-target", outline=True, style={"color":"white", 'border': 'solid 1px white'}),
                                                           dbc.Popover(children=[dbc.PopoverHeader("About"),
-                                                                                dbc.PopoverBody([f"{author}",                             
-                                                                                		         f"\n {emailAuthor}", 
-                                                                                        	     html.Hr(), 
-                                                                                        		 f"This app was built for my Master's Thesis, under the supervision of {supervisor} ({emailSupervisor})."]),],
+                                                                                # dbc.PopoverBody([f"{author}",                             
+                                                                                # 		         f"\n {emailAuthor}", 
+                                                                                #         	     html.Hr(), 
+                                                                                #         		 f"This app was built for my Master's Thesis, under the supervision of {supervisor} ({emailSupervisor})."]),
+                                                                                dbc.PopoverBody(["Temporarily hidden for CFA Quant Awards anonymity rule"])
+                                                                                ],
+
                                                                        id="popover",
                                                                        is_open=False,
                                                                        target="popover-target"),
